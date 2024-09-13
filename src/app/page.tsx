@@ -1,94 +1,93 @@
+"use client";
 import Image from "next/image";
 import styles from "./page.module.css";
+import { useMemo, useState } from "react";
+
+const round = (num: number) =>
+  Math.round((num + Number.EPSILON) * 100) / 100;
 
 export default function Home() {
+  const [startPage, setStartPage] = useState<number | undefined>();
+  const [endPage, setEndPage] = useState<number | undefined>();
+  const [pagesPerDayCount, setPagesPerDayCount] = useState<
+    number | undefined
+  >();
+
+  const pagesCount =
+    startPage && endPage && endPage > startPage && endPage - startPage;
+  const pagesCountReadDays =
+    pagesCount && pagesPerDayCount && pagesCount / pagesPerDayCount;
+  const pagesCountReadMonths =
+    pagesCountReadDays && pagesCountReadDays / 30;
+
+  const output = useMemo(() => {
+    if (startPage && endPage && pagesPerDayCount) {
+      const days = [];
+      let currentDayIndex = 1;
+      const currentDate = new Date();
+      for (
+        let currentStartPage = startPage;
+        currentStartPage < endPage;
+        currentStartPage += pagesPerDayCount
+      ) {
+        const currentEndPage = currentStartPage + pagesPerDayCount - 1;
+        const currentDateDay = currentDate.getDate();
+        const currentMonthNameLocalized = currentDate.toLocaleDateString(
+          "ru-RU",
+          {
+            month: "short",
+          }
+        );
+        days.push(
+          `${currentDateDay} ${currentMonthNameLocalized} (день ${currentDayIndex}) — стр. ${currentStartPage}-${currentEndPage}`
+        );
+
+        currentDayIndex += 1;
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+
+      return days.join("\n");
+    }
+  }, [startPage, endPage, pagesPerDayCount]);
+
   return (
     <main className={styles.main}>
-      <div className={styles.description}>
+      <div className={styles.center}>
+        <form>
+          <div>
+            <p>Введи с какой страницы будешь начинать читать</p>
+            <div>
+              <input onChange={(e) => setStartPage(+e.target.value)} />
+            </div>
+          </div>
+
+          <div>
+            <p>Введи до какой страницы будешь читать</p>
+            <div>
+              <input onChange={(e) => setEndPage(+e.target.value)} />
+            </div>
+          </div>
+
+          <div>
+            <p>Введи по сколько страниц в день будешь читать</p>
+            <div>
+              <input
+                onChange={(e) => setPagesPerDayCount(+e.target.value)}
+              />
+            </div>
+          </div>
+        </form>
+
         <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
+          План чтения {pagesCount && `${pagesCount} страниц`}{" "}
+          {pagesCountReadDays &&
+            `за ${pagesCountReadDays} дней (${round(
+              pagesCountReadMonths as number
+            )} месяца)`}
         </p>
         <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+          <textarea readOnly value={output} />
         </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
       </div>
     </main>
   );
