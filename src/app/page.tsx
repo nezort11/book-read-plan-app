@@ -90,7 +90,7 @@ export default function Home() {
         <p>
           План чтения {pagesReadCount && `${pagesReadCount} страниц`}{" "}
           {pagesReadCountDays &&
-            `за ${pagesReadCountDays} дней (${round(
+            `за ${round(pagesReadCountDays)} дней (${round(
               pagesReadCountMonths as number
             )} месяца)`}
         </p>
