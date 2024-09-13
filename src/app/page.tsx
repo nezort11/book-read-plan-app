@@ -13,12 +13,14 @@ export default function Home() {
     number | undefined
   >();
 
-  const pagesCount =
-    startPage && endPage && endPage > startPage && endPage - startPage;
-  const pagesCountReadDays =
-    pagesCount && pagesPerDayCount && pagesCount / pagesPerDayCount;
-  const pagesCountReadMonths =
-    pagesCountReadDays && pagesCountReadDays / 30;
+  const pagesReadCount =
+    startPage && endPage && endPage > startPage && endPage - startPage + 1;
+  const pagesReadCountDays =
+    pagesReadCount &&
+    pagesPerDayCount &&
+    pagesReadCount / pagesPerDayCount;
+  const pagesReadCountMonths =
+    pagesReadCountDays && pagesReadCountDays / 30;
 
   const resultPlan = useMemo(() => {
     if (startPage && endPage && pagesPerDayCount) {
@@ -86,10 +88,10 @@ export default function Home() {
         </form>
 
         <p>
-          План чтения {pagesCount && `${pagesCount} страниц`}{" "}
-          {pagesCountReadDays &&
-            `за ${pagesCountReadDays} дней (${round(
-              pagesCountReadMonths as number
+          План чтения {pagesReadCount && `${pagesReadCount} страниц`}{" "}
+          {pagesReadCountDays &&
+            `за ${pagesReadCountDays} дней (${round(
+              pagesReadCountMonths as number
             )} месяца)`}
         </p>
         <div>
