@@ -20,7 +20,7 @@ export default function Home() {
   const pagesCountReadMonths =
     pagesCountReadDays && pagesCountReadDays / 30;
 
-  const output = useMemo(() => {
+  const resultPlan = useMemo(() => {
     if (startPage && endPage && pagesPerDayCount) {
       const days = [];
       let currentDayIndex = 1;
@@ -54,25 +54,32 @@ export default function Home() {
     <main className={styles.main}>
       <div className={styles.center}>
         <form>
-          <div>
+          <div className={styles.inputGroup}>
             <p>Введи с какой страницы будешь начинать читать</p>
             <div>
-              <input onChange={(e) => setStartPage(+e.target.value)} />
+              <input
+                onChange={(e) => setStartPage(+e.target.value)}
+                className={styles.input}
+              />
             </div>
           </div>
 
-          <div>
+          <div className={styles.inputGroup}>
             <p>Введи до какой страницы будешь читать</p>
             <div>
-              <input onChange={(e) => setEndPage(+e.target.value)} />
+              <input
+                onChange={(e) => setEndPage(+e.target.value)}
+                className={styles.input}
+              />
             </div>
           </div>
 
-          <div>
+          <div className={styles.inputGroup}>
             <p>Введи по сколько страниц в день будешь читать</p>
             <div>
               <input
                 onChange={(e) => setPagesPerDayCount(+e.target.value)}
+                className={styles.input}
               />
             </div>
           </div>
@@ -86,7 +93,12 @@ export default function Home() {
             )} месяца)`}
         </p>
         <div>
-          <textarea readOnly value={output} />
+          <textarea
+            readOnly
+            value={resultPlan}
+            rows={20}
+            className={styles.resultArea}
+          />
         </div>
       </div>
     </main>
